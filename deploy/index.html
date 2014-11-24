@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Blow - Christmas Experiment 2014</title>
+		<meta name="description" content="Particle Stream">
+		<meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE9 mode -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1.0">
+		<meta property="og:title" content="Blow" />
+		<meta property="og:description" content="Christmas Experiment 2014"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+
+		<script src="js/libs/Tween.js"></script>
+		<script src="js/libs/glMatrix-0.9.5.min.js"></script>
+		<script src="js/libs/dat.gui.js"></script>
+		<script src="js/libs/Perlin.js"></script>
+
+		<script src="js/bongiovi/SimpleImageLoader.js"></script>
+		<script src="js/bongiovi/Scheduler.js"></script>
+		<script src="js/bongiovi/EventDispatcher.js"></script>
+
+		<script src="js/gl/GLTools.js"></script>
+		<script src="js/gl/GLShader.js"></script>
+		<script src="js/gl/GLTexture.js"></script>
+		<script src="js/gl/Camera.js"></script>
+		<script src="js/gl/Mesh.js"></script>
+		<script src="js/gl/SceneRotation.js"></script>
+		<script src="js/gl/Scene.js"></script>
+		<script src="js/gl/View.js"></script>
+		<script src="js/gl/Framebuffer.js"></script>
+		<script src="js/gl/EffectComposer.js"></script>
+
+		<script src="js/ViewForce.js"></script>
+		<script src="js/ViewSave.js"></script>
+		<script src="js/ViewCard.js"></script>
+		<script src="js/ViewRender.js"></script>
+		<script src="js/Views.js"></script>
+		<script src="js/SceneSand.js"></script>
+
+		<script src="js/Index.js"></script>
+ 
+		<script>
+			var main, scheduler, gui, images;
+			var params = {};
+			params.offset = 0;
+			params.posOffset = 2.5;
+			params.velOffset = 0.02;
+			params.accOffset = 0.003;
+			params.targetAccOffset = 0.003;
+			params.timeOffset = 0.001;
+			params.decreaseRate = 0.9963;
+			params.showForceMap = false;
+			params.showMap = false;
+
+			function init() {
+
+				scheduler  = new Scheduler();
+				var loader = new SimpleImageLoader();
+
+				var toLoad = [
+							"assets/bg.jpg",
+							"assets/card.jpg",
+							"assets/image0.jpg",
+							"assets/image1.jpg",
+							"assets/image2.jpg",
+							"assets/gold.jpg"
+							];
+
+				loader.load(toLoad, this, this.onImageLoaded);
+			}
+
+
+			function onImageLoaded(imgs) {
+				images = imgs;
+				main = new Main();
+
+				// var gui = new dat.GUI({width:300});
+				// gui.add(params, "showMap");
+			}
+
+			window.craicAudioContext = (function(){
+				return  window.webkitAudioContext || window.AudioContext ;
+			})();
+
+			navigator.getMedia = ( navigator.mozGetUserMedia ||
+								   navigator.getUserMedia ||
+								   navigator.webkitGetUserMedia ||
+								   navigator.msGetUserMedia);
+		</script>
+	</head>
+
+	<body onload="init()">
+	</body>
+</html>
