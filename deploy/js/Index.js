@@ -100,9 +100,7 @@ function shuffle(o){ //v1.0
 
 	p._onImageDataParsed = function() {
 		console.debug( "All Image Data Parsed" );	
-		// this.scene.setImagesData(getRandomElement(this._imageDatas));
-		scheduler.delay(this, this.playNextImage, [], 2000);
-
+		// scheduler.delay(this, this.playNextImage, [], 2000);
 	};	
 
 
