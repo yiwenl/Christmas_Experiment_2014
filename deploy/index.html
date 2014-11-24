@@ -18,6 +18,7 @@
 		<script src="js/bongiovi/SimpleImageLoader.js"></script>
 		<script src="js/bongiovi/Scheduler.js"></script>
 		<script src="js/bongiovi/EventDispatcher.js"></script>
+		<script src="js/bongiovi/ElementUtils.js"></script>
 
 		<script src="js/gl/GLTools.js"></script>
 		<script src="js/gl/GLShader.js"></script>
@@ -90,6 +91,13 @@
 	</head>
 
 	<body onload="init()">
-		<div class="interface_overlay"></div>
+		<div id="interface_overlay">
+			<div id="instruction_container">
+				<p>Blow Souffle 吹</p>
+			</div>
+
+			<div class="btn_restart">RESTART</div>
+			<div class="msg_loading">LOADING...</div>
+		</div>
 	</body>
 </html>

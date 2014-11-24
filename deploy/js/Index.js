@@ -26,6 +26,10 @@ function shuffle(o){ //v1.0
 		this.start();
 		this.parseImages();
 		this.scene = new SceneSand();
+
+
+		this._btnRestart = document.body.querySelector(".btn_restart");
+		this._btnRestart.addEventListener("click", this.playNextImage.bind(this));
 	};
 
 
@@ -54,10 +58,7 @@ function shuffle(o){ //v1.0
 
 
 	p.getImageData = function(img) {
-		console.debug( "Get Image Data : ", img );
 		var threshold   = 220;
-
-		// var img         = images["image0"];
 		var canvas      = document.createElement("canvas");
 		canvas.width    = img.width;
 		canvas.height   = img.height;
@@ -99,7 +100,8 @@ function shuffle(o){ //v1.0
 
 
 	p._onImageDataParsed = function() {
-		console.debug( "All Image Data Parsed" );	
+		console.debug( "All Image Data Parsed" );
+		ElementUtils.addClass(this._btnRestart, "show");	
 		// scheduler.delay(this, this.playNextImage, [], 2000);
 	};	
 
@@ -107,7 +109,6 @@ function shuffle(o){ //v1.0
 	p.playNextImage = function() {
 		this.scene.setImagesData(getRandomElement(this._imageDatas));
 	};
-
 
 
 	p.start = function() {
