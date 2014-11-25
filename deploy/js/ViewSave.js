@@ -6,6 +6,7 @@
 		View.call(this, "assets/shaders/save.vert", "assets/shaders/save.frag");
 	}
 
+	var getDistance = function(x0, y0, x1, y1) {	return Math.sqrt( (x0-x1) * (x0-x1) + (y0-y1) * (y0-y1) );	}
 	var p = ViewSave.prototype = new View();
 	var s = View.prototype;
 
@@ -27,22 +28,14 @@
 			var dist = getDistance(center.x, center.y, p.u, p.v);
 			var noise = Perlin.noise(p.u*noiseOffset, p.v*noiseOffset, noiseSeed) * .5 + dist;
 
-			// positions.push([ (p.u-.5)*2.0, (p.v-.5)*2.0, 0]);
 			positions.push([ p.u-1.0, p.v-1.0, 0]);
 			coords.push([0, 0]);
 			indices.push(index);
-			// var yOffset = p.fixed ? 0.0 : (1.0-noise)*.02;
-			var yOffset = (1.0-noise)*.03;
-			yOffset = 0;
-			colors.push([p.u, 0.05 + yOffset, p.v]);
+			colors.push([p.u, 0.05, p.v]);
 
 			positions.push([ p.u-1.0, p.v, 0]);
 			coords.push([0, 0]);
 			indices.push(index);
-
-			// var noise = Perlin.noise(p.u*noiseOffset, p.v*noiseOffset, noiseSeed);
-			
-			// colors.push([p.fixed ? 0.0 : .1+Math.random()*.9, Math.random()*.95+.5, dist*2.0]);
 			colors.push([p.fixed ? 0.0 : .3+Math.random()*.7, Math.random()*.95+.5, noise]);
 
 			index++;
@@ -54,11 +47,26 @@
 		this.mesh.bufferTexCoords(coords);
 		this.mesh.bufferIndices(indices);
 		this.mesh.bufferData(colors, "aVertexColor", 3);
+	};
 
 
-		function getDistance(x0, y0, x1, y1) {
-			return Math.sqrt( (x0-x1) * (x0-x1) + (y0-y1) * (y0-y1) );
+	p.updateParticles = function(particles) {
+		this.particles = particles;
+		var colors       = [];
+		var noiseOffset  = 10.0;
+		var noiseSeed    = Math.random() * 0xFFFF;
+		var center       = {x:Math.random(), y:Math.random()};
+
+		for(var i=0; i<this.particles.length; i++) {
+			var p = this.particles[i];
+			var dist = getDistance(center.x, center.y, p.u, p.v);
+			var noise = Perlin.noise(p.u*noiseOffset, p.v*noiseOffset, noiseSeed) * .5 + dist;
+
+			colors.push([p.u, 0.05, p.v]);
+			colors.push([p.fixed ? 0.0 : .3+Math.random()*.7, Math.random()*.95+.5, noise]);
 		}
+
+		this.mesh.bufferData(colors, "aVertexColor", 3);
 	};
 
 

@@ -20,6 +20,7 @@ function shuffle(o){ //v1.0
 		this._canvas.width 		= window.innerWidth;
 		this._canvas.height 	= window.innerHeight;
 		this._imageDatas 		= [];
+		this._needCheckProgress = false;
 
 		GL.init(this._canvas);
 
@@ -30,6 +31,8 @@ function shuffle(o){ //v1.0
 
 		this._btnRestart = document.body.querySelector(".btn_restart");
 		this._btnRestart.addEventListener("click", this.playNextImage.bind(this));
+
+		this._msgLoading = document.body.querySelector(".msg_loading");
 	};
 
 
@@ -45,8 +48,6 @@ function shuffle(o){ //v1.0
 		var imgGoldData = ctxGold.getImageData(0, 0, imgGold.width, imgGold.height);
 		this.pixelsGold  = imgGoldData.data;
 		
-		// this.getImageData(images["image0"]);
-
 		var i=0;
 		while(images["image"+i] != undefined) {
 			scheduler.defer(this, this.getImageData, [images["image"+i]]);
@@ -58,6 +59,7 @@ function shuffle(o){ //v1.0
 
 
 	p.getImageData = function(img) {
+		console.log( "Get Image data :", img );
 		var threshold   = 220;
 		var canvas      = document.createElement("canvas");
 		canvas.width    = img.width;
@@ -102,11 +104,18 @@ function shuffle(o){ //v1.0
 	p._onImageDataParsed = function() {
 		console.debug( "All Image Data Parsed" );
 		ElementUtils.addClass(this._btnRestart, "show");	
-		// scheduler.delay(this, this.playNextImage, [], 2000);
+		scheduler.delay(this, this.playNextImage, [], 2000);
 	};	
 
 
 	p.playNextImage = function() {
+		ElementUtils.addClass(this._msgLoading, "show");
+		this._needCheckProgress = true;
+		scheduler.delay(this, this.toPlayNextImg, [], 500);
+	};
+
+
+	p.toPlayNextImg = function() {
 		this.scene.setImagesData(getRandomElement(this._imageDatas));
 	};
 
@@ -118,6 +127,13 @@ function shuffle(o){ //v1.0
 	p.render = function() {
 		this.scene.loop();
 		TWEEN.update();
+
+		if(this._needCheckProgress) {
+			if(this.scene.isCardReady()) {
+				this._needCheckProgress = false;
+				ElementUtils.removeClass(this._msgLoading, "show");
+			}
+		}
 	};	
 	
 })();

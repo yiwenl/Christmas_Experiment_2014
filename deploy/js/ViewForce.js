@@ -73,6 +73,10 @@
 	};
 
 
+	p.reset = function() {
+		this.revealOffset = .2;
+	};
+
 
 	p.render = function(texture) {
 		if(!this.shader.isReady() ) return;

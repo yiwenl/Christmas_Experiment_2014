@@ -14,7 +14,7 @@
 		var coords = [];
 		var indices = [0, 1, 3, 1, 2, 3];
 
-		var size = 125;
+		var size = 126;
 		var ratio = 1024/896;
 		var y = -90;
 		var xOffset = 15;

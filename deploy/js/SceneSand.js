@@ -30,10 +30,6 @@
 		this._vCal    = new ViewForce();
 		this._vCard   = new ViewCard();
 
-
-		// scheduler.defer(this, this.createViewSave, []);
-		// scheduler.defer(this, this.createViewRender, []);
-
 		new TWEEN.Tween(this._vBg).to({"alpha":1}, 3000).easing(TWEEN.Easing.Cubic.In).start();
 	};
 
@@ -42,46 +38,38 @@
 		this.particles = data;
 		this.hasSaved = false;
 		this._isCardReady = false;
-		scheduler.defer(this, this.createViewSave, []);
-		scheduler.defer(this, this.createViewRender, []);
-		scheduler.defer(this, this._checkHaveCard, []);
+		
 
 		//	NEED TO RESET EVERYTHING, UNIFORMS
 		//	PLAYING INTRO / OUTRO
-	};
 
-
-	p.createViewSave = function() {
-		this._vSave   = new ViewSave(this.particles);
-	};
-
-
-	p.createViewRender = function(parameters) {
-		this._vRender = new ViewRender(this.particles);
-		// new TWEEN.Tween(this._vBg).to({"alpha":1}, 3000).easing(TWEEN.Easing.Cubic.In).start();
-	};
-
-
-	p._checkHaveCard = function() {
-		if(this.hasCard) this._hideCard();
+		if(this.hasCard) this._hideCard() 
 		else this._showCard();
 	};
 
 
 	p._hideCard = function() {
 		//	NEED TO LOCK THE CAMERA HERE
+		console.debug("Hide Card, outro" );
+		this._showCard();
 	};
 
 
 	p._showCard = function() {
-		console.debug( "Show Card" );
+		if(this._vSave == undefined) this._vSave   = new ViewSave(this.particles);
+		else this._vSave.updateParticles(this.particles);
+		if(this._vRender == undefined ) this._vRender = new ViewRender(this.particles);
+
+		this._vCal.reset();
 		this.hasCard = true;
 		this._isCardReady = true;
 	};
 
+	p.isCardReady = function() {	return this._isCardReady;	};
+
 
 	p.render = function() {
-		params.accOffset += (params.targetAccOffset - params.accOffset) * .5;
+		// params.accOffset += (params.targetAccOffset - params.accOffset) * .5;
 		// if(Math.random() > .9) console.log( params.accOffset );
 		GL.gl.disable(GL.gl.DEPTH_TEST);
 		if(!this.hasSaved && this._isCardReady) {

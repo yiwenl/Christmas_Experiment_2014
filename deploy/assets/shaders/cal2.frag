@@ -111,7 +111,6 @@ void main(void) {
             float yAcc          = snoise(tmpPos.y * posOffset, tmpPos.z * posOffset, time + extra.y*.001);
             yAcc                = -(yAcc - 1.0) * .5;
             float zAcc          = snoise(tmpPos.z * posOffset, tmpPos.x * posOffset, time + extra.y*.001);
-            zAcc                += .5;
             float reveal        = extra.z > revealOffset ? 0.0 : 1.0;
             vec3 acc            = vec3(xAcc, yAcc, zAcc) * accOffset * extra.x * reveal;
             velocity            += acc;

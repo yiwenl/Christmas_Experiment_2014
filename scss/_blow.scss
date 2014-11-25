@@ -64,7 +64,7 @@
 
 	.msg_loading {
 		width:100px;
-		height:25px;
+		height:20px;
 		background:rgba(0, 0, 0, .5);
 		color:white;
 		font-size:12px;
@@ -75,6 +75,26 @@
 		margin-top: -12.5px;
 		margin-left:-50px;
 		padding-top:7px;
-		text-align:center
+		text-align:center;
+
+		transform: translate(0, 30px);
+		-webkit-transform: translate(0, 30px);
+		-moz-transform: translate(0, 30px);
+		-o-transform: translate(0, 30px);
+		-ms-transform: translate(0, 30px);
+
+		@include transition(all .5s ease-out);
+		opacity: 0;
+
+
+		&.show {
+			opacity:1;
+
+			transform: translate(0, 0);
+			-webkit-transform: translate(0, 0);
+			-moz-transform: translate(0, 0);
+			-o-transform: translate(0, 0);
+			-ms-transform: translate(0, 0);
+		}
 	}
 }
