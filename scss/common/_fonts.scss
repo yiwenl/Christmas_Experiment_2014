@@ -1,10 +1,10 @@
 
 @include font-face(
-	"eurostileregular",
-	font-files("eurostile-webfont.eot",
-				"eurostile-webfont.woff",
-				"eurostile-webfont.ttf"), eot("eurostile-webfont.eot?#iefix")
+	"Museo",
+	font-files("Museo100-Regular.eot",
+				"Museo100-Regular.woff",
+				"Museo100-Regular.ttf"), eot("Museo100-Regular.eot?#iefix")
 );
 
 
-
+$Museo:"Museo",Verdana,Geneva;

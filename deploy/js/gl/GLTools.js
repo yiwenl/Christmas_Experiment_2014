@@ -9,7 +9,7 @@ GL.zFar = 3000;
 
 GL.init = function(canvas) {
 	this.canvas = canvas;
-	this.gl = this.canvas.getContext("experimental-webgl", {antialias:true});
+	this.gl = this.canvas.getContext("webgl", {antialias:true}) || this.canvas.getContext("experimental-webgl", {antialias:true}) ;
 	this.resize();
 
 
@@ -25,7 +25,7 @@ GL.init = function(canvas) {
 	this.gl.clearDepth( 1 );
 	this.depthTextureExt 	= this.gl.getExtension("WEBKIT_WEBGL_depth_texture"); // Or browser-appropriate prefix
 	this.floatTextureExt 	= this.gl.getExtension("OES_texture_float") // Or browser-appropriate prefix
-
+	
 
 	console.log( "Extentions : ", this.depthTextureExt, this.floatTextureExt );
 

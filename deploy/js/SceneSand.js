@@ -75,18 +75,16 @@
 		if(!this.hasSaved && this._isCardReady) {
 			this.fboCurrent.bind();
 			GL.gl.viewport(0, 0, this.fboCurrent.width, this.fboCurrent.height);
-			GL.gl.clearColor( 0.5, 0.5, 0.5, 1 );
-			GL.gl.clear(GL.gl.COLOR_BUFFER_BIT | GL.gl.DEPTH_BUFFER_BIT);
+			GL.clear(0.5, 0.5, 0.5, 1.0);
 			GL.setMatrices(this.cameraOtho);
 			GL.rotate(this.rotationFront);
 			this._vSave.render();
 			this.fboCurrent.unbind();
 
 			this.fboTarget.bind();
-			GL.gl.clear(GL.gl.COLOR_BUFFER_BIT | GL.gl.DEPTH_BUFFER_BIT);
+			GL.clear(0.5, 0.5, 0.5, 1.0);
 			this.fboTarget.unbind();
 
-			GL.gl.clearColor( 0, 0, 0, 1 );
 			GL.gl.viewport(0, 0, window.innerWidth, window.innerHeight);
 			this.hasSaved = true;
 			return;

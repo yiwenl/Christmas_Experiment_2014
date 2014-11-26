@@ -78,6 +78,7 @@
 
 	p._onMouseMove = function(e) {
 		this.mouse = getMousePos(e);
+		if(e.touches) e.preventDefault();
 	};
 
 	p._onMouseUp = function(e) {

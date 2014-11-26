@@ -33,6 +33,18 @@ function shuffle(o){ //v1.0
 		this._btnRestart.addEventListener("click", this.playNextImage.bind(this));
 
 		this._msgLoading = document.body.querySelector(".msg_loading");
+		this._msgBlowing = document.body.querySelector(".msg_blowing");
+		this._microHint = document.body.querySelector(".micro_hint");
+
+		this._micro = new Microphone();
+		this._micro.addEventListener("onMicroInit", this._onMicroInit.bind(this));
+		this._micro.init();
+	};
+
+
+	p._onMicroInit = function(e) {
+		console.log( "Mirco Init : ", e.detail );
+		ElementUtils.addClass(this._microHint, "hide");
 	};
 
 
@@ -83,7 +95,7 @@ function shuffle(o){ //v1.0
 			var p = {
 				x:tx,
 				y:ty,
-				u:tx/512+.5,
+				u:-tx/512+.5,
 				v:1.0-(ty/512+.5),
 
 				r:pixelsGold[i]/255,
@@ -104,7 +116,7 @@ function shuffle(o){ //v1.0
 	p._onImageDataParsed = function() {
 		console.debug( "All Image Data Parsed" );
 		ElementUtils.addClass(this._btnRestart, "show");	
-		scheduler.delay(this, this.playNextImage, [], 2000);
+		// scheduler.delay(this, this.playNextImage, [], 2000);
 	};	
 
 
@@ -130,6 +142,7 @@ function shuffle(o){ //v1.0
 
 		if(this._needCheckProgress) {
 			if(this.scene.isCardReady()) {
+				ElementUtils.addClass(this._msgBlowing, "show");
 				this._needCheckProgress = false;
 				ElementUtils.removeClass(this._msgLoading, "show");
 			}

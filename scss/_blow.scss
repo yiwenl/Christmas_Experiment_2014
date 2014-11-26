@@ -14,7 +14,7 @@
 		background:rgba(0, 0, 0, .5);
 
 		p {
-			font-size:12px;
+			font-size:16px;
 			color:white;
 			box-sizing: border-box;
 			padding: 10px 20px 10px 20px;
@@ -28,19 +28,14 @@
 		padding:10px;
 		background:rgba(0, 0, 0, .5);
 		color:white;
-		font-size:12px;
+		font-size:16px;
 		cursor: pointer;
 		top:30px;
 		left:30px;
 		pointer-events:none;
 		opacity: 0;
 
-		transform: translate(0, 30px);
-		-webkit-transform: translate(0, 30px);
-		-moz-transform: translate(0, 30px);
-		-o-transform: translate(0, 30px);
-		-ms-transform: translate(0, 30px);
-
+		@include transform(translate(0, 30px));
 		@include transition(all .5s ease-out);
 
 		&:hover {
@@ -52,49 +47,126 @@
 			opacity:1;
 			pointer-events:auto;
 
-			transform: translate(0, 0);
-			-webkit-transform: translate(0, 0);
-			-moz-transform: translate(0, 0);
-			-o-transform: translate(0, 0);
-			-ms-transform: translate(0, 0);
+			@include transform(translate(0, 0));
 
 		}
 	}
 
 
-	.msg_loading {
-		width:100px;
-		height:20px;
-		background:rgba(0, 0, 0, .5);
-		color:white;
-		font-size:12px;
+	// .msg_loading {
+	// 	@include absCentered(179px, 179px);
+	// 	background:url(../assets/loader.gif) no-repeat;
 
+	// 	@include transform(translate(0, 30px));
+	// 	@include transition(all .5s ease-out);
+
+	// 	opacity: 0;
+
+
+	// 	&.show {
+	// 		opacity:1;
+	// 		@include transform(translate(0, 0));
+	// 	}
+	// }
+
+
+	.msg_blowing, .msg_loading {
+		$width:150px;
+		width:$width;
+		height:20px;
+		
 		position: absolute;
 		top:50%;
 		left:50%;
 		margin-top: -12.5px;
-		margin-left:-50px;
-		padding-top:7px;
+		margin-left:-$width/2;
 		text-align:center;
 
-		transform: translate(0, 30px);
-		-webkit-transform: translate(0, 30px);
-		-moz-transform: translate(0, 30px);
-		-o-transform: translate(0, 30px);
-		-ms-transform: translate(0, 30px);
-
+		@include transform(translate(0, 30px));
 		@include transition(all .5s ease-out);
+
 		opacity: 0;
+
+		.little_arrow {
+			width:9px;
+			height:8px;
+			margin-left: ($width - 9)/2;
+			background:url(../assets/little_arrow.png) no-repeat;
+			float:left;
+			margin-top:5px;
+
+			opacity: 0;
+			@include transition(all .5s ease-in-out .1s);
+			@include transform(translate(0, 30px));
+		}
+
+
+		p {
+			float:left;
+			color:white;
+			font-size: 18px;
+			color: rgb(255, 82, 102);
+			text-transform: uppercase;
+			text-align: center;
+			width:100%;
+
+			&.dots {
+				font-size:20px;
+				margin-top:-5px;
+				opacity: 0;
+				@include transition(all .5s ease-in-out .1s);
+				@include transform(translate(0, 30px));
+			}
+		}
+
+
 
 
 		&.show {
 			opacity:1;
+			@include transform(translate(0, 0));
 
-			transform: translate(0, 0);
-			-webkit-transform: translate(0, 0);
-			-moz-transform: translate(0, 0);
-			-o-transform: translate(0, 0);
-			-ms-transform: translate(0, 0);
+			.dots, .little_arrow {
+				opacity: 1;
+				@include transform(translate(0, 0));	
+			}
+		}
+	}
+
+
+	.micro_hint {
+		$width:180px;
+
+		position: absolute;
+		top:20px;
+		right:0px;
+		width:$width;
+		@include transition(all .5s ease-in .5s);
+
+		.micro_icon {
+			width:9px;
+			height:42px;
+			background:url(../assets/micro_arrows.png) no-repeat;
+			float:right;
+			margin-right: ($width - 9)/2;
+			margin-bottom: 15px;
+		}
+
+		p {
+			font-size: 14px;
+			line-height:1.3;
+			color: rgb(255, 82, 102);
+			text-transform: uppercase;
+			text-align: center;
+			float:right;
+			clear:both;
+		}
+
+
+		&.hide {
+			@include transform(translate(0, 30px));
+			opacity: 0;
+			pointer-events:none;
 		}
 	}
 }
