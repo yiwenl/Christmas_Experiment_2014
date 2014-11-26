@@ -12,7 +12,6 @@ GL.init = function(canvas) {
 	this.gl = this.canvas.getContext("webgl", {antialias:true}) || this.canvas.getContext("experimental-webgl", {antialias:true}) ;
 	this.resize();
 
-
 	var size = this.gl.getParameter(this.gl.SAMPLES);
 	var antialias = this.gl.getContextAttributes().antialias;
 	console.log( "Sample size : ", size, antialias );

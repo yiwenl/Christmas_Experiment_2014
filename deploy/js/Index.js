@@ -34,7 +34,9 @@ function shuffle(o){ //v1.0
 
 		this._msgLoading = document.body.querySelector(".msg_loading");
 		this._msgBlowing = document.body.querySelector(".msg_blowing");
+		this._msgPressing = document.body.querySelector(".msg_press");
 		this._microHint = document.body.querySelector(".micro_hint");
+		this._message = this._msgBlowing;
 
 		this._micro = new Microphone();
 		this._micro.addEventListener("onMicroInit", this._onMicroInit.bind(this));
@@ -46,8 +48,14 @@ function shuffle(o){ //v1.0
 		console.log( "Mirco Init : ", e.detail );
 		ElementUtils.addClass(this._microHint, "hide");
 
+		this._message = e.detail.hasAudio ? this._msgBlowing : this._msgPressing;
+
 		if(e.detail.hasAudio) {
 			this._micro.addEventListener("onSound", this._onSound.bind(this));
+		} else {
+			console.debug( "Not audio input, switch to keyboard" );
+			window.addEventListener("keypress", this._onKeyPress.bind(this));
+			window.addEventListener("keyup", this._onKeyUp.bind(this));
 		}
 	};
 
@@ -58,7 +66,23 @@ function shuffle(o){ //v1.0
 
 		if(this.scene.isCardReady() && increase > 0 ) {
 			ElementUtils.removeClass(this._msgBlowing, "show");
+		} 
+	};
+
+
+	p._onKeyPress = function(e) {
+		if(e.keyCode == 32) {
+			var max = .015;
+			params.targetAccOffset = max;
+			increase = max * .25;
+			this.scene.setIncrease(increase);
+			ElementUtils.removeClass(this._msgPressing, "show");
 		}
+	};
+
+	p._onKeyUp = function(e) {
+		this.scene.setIncrease(0);
+		params.targetAccOffset = .003;
 	};
 
 
@@ -130,13 +154,17 @@ function shuffle(o){ //v1.0
 	p._onImageDataParsed = function() {
 		console.debug( "All Image Data Parsed" );
 		ElementUtils.addClass(this._btnRestart, "show");	
-		// scheduler.delay(this, this.playNextImage, [], 2000);
+		scheduler.delay(this, this.playNextImage, [], 4000);
 	};	
 
 
 	p.playNextImage = function() {
+		console.debug( "Play next bg" );
+		ElementUtils.removeClass(this._message, "show");
 		ElementUtils.addClass(this._msgLoading, "show");
 		this._needCheckProgress = true;
+		this.scene.toHide();
+		// this.scene._isCardReady = false;
 		scheduler.delay(this, this.toPlayNextImg, [], 500);
 	};
 
@@ -156,11 +184,16 @@ function shuffle(o){ //v1.0
 
 		if(this._needCheckProgress) {
 			if(this.scene.isCardReady()) {
-				ElementUtils.addClass(this._msgBlowing, "show");
 				this._needCheckProgress = false;
 				ElementUtils.removeClass(this._msgLoading, "show");
+				scheduler.delay(this, this.showHint, [], params.openingDuration);
 			}
 		}
 	};	
+
+
+	p.showHint = function() {
+		ElementUtils.addClass(this._message, "show");
+	};
 	
 })();

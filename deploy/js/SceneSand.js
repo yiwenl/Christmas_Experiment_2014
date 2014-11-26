@@ -12,6 +12,7 @@
 		this.hasSaved = false;
 		this.hasCard = false;
 		this._isCardReady = false;
+		this._isClosing = false;
 	}
 
 	var p = SceneSand.prototype = new Scene();
@@ -26,36 +27,57 @@
 	};
 
 	p._initViews = function() {
-		this._vBg   = new ViewBg("assets/shaders/copy.vert", "assets/shaders/copyWithAlpha.frag");
-		this._vCal    = new ViewForce();
-		this._vCard   = new ViewCard();
+		scheduler.defer(this, this.createBg, []);
+		scheduler.defer(this, this.createForce, []);
+		scheduler.defer(this, this.createCard, []);
+	};
 
+
+	p.createForce = function() {
+		this._vCal    = new ViewForce();
+	};
+
+	p.createCard = function() {
+		this._vCard   = new ViewCard();
+	};
+
+	p.createBg = function() {
+		console.debug( "Show BG" );
+		this._vBg   = new ViewBg("assets/shaders/copy.vert", "assets/shaders/copyWithAlpha.frag");
 		new TWEEN.Tween(this._vBg).to({"alpha":1}, 3000).easing(TWEEN.Easing.Cubic.In).start();
 	};
 
 
 	p.setImagesData = function(data) {
 		this.particles = data;
-		this.hasSaved = false;
-		this._isCardReady = false;
-		
-
-		//	NEED TO RESET EVERYTHING, UNIFORMS
-		//	PLAYING INTRO / OUTRO
 
 		if(this.hasCard) this._hideCard() 
 		else this._showCard();
 	};
 
 
+	p.toHide = function() {
+		this._isClosing = true;
+	};
+
+
 	p._hideCard = function() {
 		//	NEED TO LOCK THE CAMERA HERE
 		console.debug("Hide Card, outro" );
-		this._showCard();
+		// this._showCard();
+		this._vCard.outro();
+		this.sceneRotation.setCameraPos([0.7958, 0.1950, -0.2651, -0.5083]);
+		scheduler.delay(this, this._showCard, [], params.closingDuration);
 	};
 
 
 	p._showCard = function() {
+		console.debug( "show Card" );
+
+		this.hasSaved = false;
+		this._isCardReady = false;
+		this._isClosing = false;
+
 		if(this._vSave == undefined) this._vSave   = new ViewSave(this.particles);
 		else this._vSave.updateParticles(this.particles);
 		if(this._vRender == undefined ) this._vRender = new ViewRender(this.particles);
@@ -63,9 +85,15 @@
 		this._vCal.reset();
 		this.hasCard = true;
 		this._isCardReady = true;
+		this._vCard.intro();
+		this.sceneRotation.resetQuat();
+		this.sceneRotation.setCameraPos([0.9657, 0.0065, -0.2068, -0.1566]);
 	};
 
-	p.isCardReady = function() {	return this._isCardReady;	};
+	p.isCardReady = function() {	
+		if(this._isClosing) return false;
+		return this._isCardReady;	
+	};
 
 	p.setIncrease = function(increase) {
 		if(this._vCal) this._vCal.increase = increase;
@@ -73,7 +101,8 @@
 
 
 	p.render = function() {
-		params.accOffset += (params.targetAccOffset - params.accOffset) * .5;
+
+		params.accOffset += (params.targetAccOffset - params.accOffset) * .25;
 		// if(Math.random() > .9) console.log( params.accOffset );
 		GL.gl.disable(GL.gl.DEPTH_TEST);
 		if(!this.hasSaved && this._isCardReady) {
@@ -114,7 +143,7 @@
 
 		GL.setMatrices(this.cameraOtho);
 		GL.rotate(this.rotationFront);
-		this._vBg.render(this.texBg);
+		if(this._vBg) this._vBg.render(this.texBg);
 
 
 		if(this._isCardReady) {
@@ -122,6 +151,7 @@
 			GL.setMatrices(this.camera);
 			GL.rotate(this.sceneRotation.matrix);
 			this._vCard.render(this.texCard);
+			this._vRender.copy(this._vCard);
 			this._vRender.render(this.fboTarget.getTexture());
 
 			this.swapFbos();

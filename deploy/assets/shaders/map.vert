@@ -6,6 +6,8 @@ attribute vec4 aVertexColor;
 
 uniform mat4 uMVMatrix;
 uniform mat4 uPMatrix;
+uniform vec3 position;
+uniform float opacity;
 uniform sampler2D texture;
 varying vec4 vVertexColor;
 varying float alpha;
@@ -19,6 +21,7 @@ void main(void) {
 	float range = 200.0;
 	alpha = clamp(1.5 - color.y, 0.0, 1.0);
 	alpha = sin(alpha * PI * .5);
+	alpha *= opacity;
 	pos = color.rgb - vec3(.5);
 
 	pos *= range;
@@ -30,6 +33,6 @@ void main(void) {
 
 	if(color.y >= 1.5) toDiscard = 0.0;
 
-    gl_Position = uPMatrix * uMVMatrix * vec4(pos, 1.0);
+    gl_Position = uPMatrix * uMVMatrix * vec4(pos+position, 1.0);
     vVertexColor = aVertexColor;
 }

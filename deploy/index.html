@@ -12,7 +12,6 @@
 
 		<script src="js/libs/Tween.js"></script>
 		<script src="js/libs/glMatrix-0.9.5.min.js"></script>
-		<script src="js/libs/dat.gui.js"></script>
 		<script src="js/libs/Perlin.js"></script>
 
 		<script src="js/bongiovi/SimpleImageLoader.js"></script>
@@ -53,6 +52,9 @@
 			params.decreaseRate = 0.9963;
 			params.showForceMap = false;
 			params.showMap = false;
+
+			params.openingDuration = 1500;
+			params.closingDuration = 1000;
 
 			function init() {
 
@@ -97,7 +99,7 @@
 	<body onload="init()">
 		<div id="interface_overlay">
 			<div id="instruction_container">
-				<p>Blow Souffle 吹</p>
+				<p>Thank <a href="http://bertrandcarrara.com" target="_blank">Bert</a> for the design !</p>
 			</div>
 
 			<div class="btn_restart">RESTART</div>
@@ -107,7 +109,11 @@
 				<!-- <div class="little_arrow"></div> -->
 			</div>
 			<div class="msg_blowing">
-				<p>Blow the gold</p>
+				<p>Blow the gold!</p>
+				<div class="little_arrow"></div>
+			</div>
+			<div class="msg_press">
+				<p>Press the space bar!</p>
 				<div class="little_arrow"></div>
 			</div>
 			<div class="micro_hint">

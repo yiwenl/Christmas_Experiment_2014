@@ -2,6 +2,11 @@
 
 (function() {
 	ViewRender = function(particles) {
+		this.alpha = 1;
+		this.x = 0;
+		this.y = 0;
+		this.z = 0;
+
 		this.particles = particles;
 		View.call(this, "assets/shaders/map.vert", "assets/shaders/map.frag");
 	}
@@ -44,7 +49,17 @@
 	p.render = function(texturePos) {
 		this.shader.bind();
 		this.shader.uniform("texture", "uniform1i", 0);
+		this.shader.uniform("position", "uniform3fv", [this.x, this.y, this.z]);
+		this.shader.uniform("opacity", "uniform1f", this.alpha);
 		texturePos.bind(0);
 		GL.draw(this.mesh);
+	};
+
+
+	p.copy = function(view) {
+		this.x = view.x;
+		this.y = view.y;
+		this.z = view.z;
+		this.alpha = view.alpha;
 	};
 })();
