@@ -45,6 +45,20 @@ function shuffle(o){ //v1.0
 	p._onMicroInit = function(e) {
 		console.log( "Mirco Init : ", e.detail );
 		ElementUtils.addClass(this._microHint, "hide");
+
+		if(e.detail.hasAudio) {
+			this._micro.addEventListener("onSound", this._onSound.bind(this));
+		}
+	};
+
+
+	p._onSound = function(e) {
+		var increase = e.detail.increase;
+		this.scene.setIncrease(increase);
+
+		if(this.scene.isCardReady() && increase > 0 ) {
+			ElementUtils.removeClass(this._msgBlowing, "show");
+		}
 	};
 
 

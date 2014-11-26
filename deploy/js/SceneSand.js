@@ -67,9 +67,13 @@
 
 	p.isCardReady = function() {	return this._isCardReady;	};
 
+	p.setIncrease = function(increase) {
+		if(this._vCal) this._vCal.increase = increase;
+	};
+
 
 	p.render = function() {
-		// params.accOffset += (params.targetAccOffset - params.accOffset) * .5;
+		params.accOffset += (params.targetAccOffset - params.accOffset) * .5;
 		// if(Math.random() > .9) console.log( params.accOffset );
 		GL.gl.disable(GL.gl.DEPTH_TEST);
 		if(!this.hasSaved && this._isCardReady) {

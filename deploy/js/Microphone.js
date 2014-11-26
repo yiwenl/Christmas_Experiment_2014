@@ -27,8 +27,6 @@
             alert('webkitGetUserMedia threw exception :' + e);
             this.dispatchCustomEvent("onMicroInit", {hasAudio:this.audioContext != undefined});
         }	
-
-
         
 	};
 
@@ -54,6 +52,7 @@
 
 
 	p._loop = function() {
+		var increase = .0;
 		this.times = new Uint8Array(this.analyser.frequencyBinCount);
 		this.analyser.getByteTimeDomainData(this.times);
 		var total = 0;
@@ -69,6 +68,7 @@
 		if(max<0) max = 0;
 		increase = max * .25;
 
-		console.log( incrase );
+		params.targetAccOffset = .003 + max * .7;
+		this.dispatchCustomEvent("onSound", {increase:increase});
 	};
 })();
