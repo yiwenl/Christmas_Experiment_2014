@@ -1,5 +1,7 @@
 // ViewSave.js
 
+window.perlins = [];
+
 (function() {
 	ViewSave = function(particles) {
 		this.particles = particles;
@@ -56,15 +58,27 @@
 		var noiseOffset  = 10.0;
 		var noiseSeed    = Math.random() * 0xFFFF;
 		var center       = {x:Math.random(), y:Math.random()};
+		var hasPerlin 	 = window.perlins.length >= 3;
+		if(hasPerlin) perlin = window.perlins[Math.floor(Math.random() * 3)];
+		else perlin = [];
+		var noise;
 
 		for(var i=0; i<this.particles.length; i++) {
 			var p = this.particles[i];
 			var dist = getDistance(center.x, center.y, p.u, p.v);
-			var noise = Perlin.noise(p.u*noiseOffset, p.v*noiseOffset, noiseSeed) * .5 + dist;
+			if(hasPerlin) noise = perlin[i];
+			else {
+				noise = Perlin.noise(p.u*noiseOffset, p.v*noiseOffset, noiseSeed) * .5
+				perlin.push(noise);
+			}
+			 // = Perlin.noise(p.u*noiseOffset, p.v*noiseOffset, noiseSeed)  + dist;
+			noise += dist;
 
 			colors.push([p.u, 0.05, p.v]);
 			colors.push([p.fixed ? 0.0 : .3+Math.random()*.7, Math.random()*.95+.5, noise]);
 		}
+
+		if(!hasPerlin) window.perlins.push(perlin);
 
 		this.mesh.bufferData(colors, "aVertexColor", 3);
 	};

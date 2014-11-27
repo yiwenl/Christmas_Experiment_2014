@@ -64,7 +64,6 @@
 
 
 	p.resize = function() {
-		console.debug( "Resize" );
 		this.camera.setPerspective(45, window.innerWidth/window.innerHeight, 5, 3000);
 	};
 

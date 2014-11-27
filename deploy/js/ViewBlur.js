@@ -2,7 +2,6 @@
 
 (function() {
 	ViewBlur = function(frag) {
-		console.log( "View Blur" );
 		View.call(this, "assets/shaders/copy.vert", frag);
 		this.blur = 1.0/512.0;
 	}

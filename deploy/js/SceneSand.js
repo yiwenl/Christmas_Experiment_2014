@@ -20,7 +20,6 @@
 	var s = Scene.prototype;
 
 	p._initTextures = function() {
-		console.debug( "INIT TEXTURES" );
 		this.texBg 		= new GLTexture(images["bg"]);
 		this.texCard 	= new GLTexture(images["card"]);
 		this.fboCurrent = new Framebuffer(512*2, 512*2, GL.gl.NEAREST, GL.gl.NEAREST);
@@ -54,13 +53,10 @@
 	};
 
 	p.createCard = function() {
-		console.debug( "Create card" );
 		this._vCard   = new ViewCard();
-		// this._vCard.intro();
 	};
 
 	p.createBg = function() {
-		console.debug( "Show BG" );
 		this._vBg   = new ViewBg("assets/shaders/copy.vert", "assets/shaders/copyWithAlpha.frag");
 		new TWEEN.Tween(this._vBg).to({"alpha":1}, 3000).easing(TWEEN.Easing.Cubic.In).start();
 	};
@@ -80,9 +76,6 @@
 
 
 	p._hideCard = function() {
-		//	NEED TO LOCK THE CAMERA HERE
-		console.debug("Hide Card, outro" );
-		// this._showCard();
 		this._vCard.outro();
 		this.sceneRotation.setCameraPos([0.7958, 0.1950, -0.2651, -0.5083]);
 		scheduler.delay(this, this._showCard, [], params.closingDuration);
@@ -90,8 +83,6 @@
 
 
 	p._showCard = function() {
-		console.debug( "show Card" );
-
 		this.hasSaved = false;
 		this._isCardReady = false;
 		this._isClosing = false;
@@ -119,9 +110,9 @@
 
 
 	p.render = function() {
-
 		params.accOffset += (params.targetAccOffset - params.accOffset) * .25;
-		// if(Math.random() > .9) console.log( params.accOffset );
+		params.posOffset += (params.targetPosOffset - params.posOffset) * .25;
+
 		GL.gl.disable(GL.gl.DEPTH_TEST);
 		if(!this.hasSaved && this._isCardReady) {
 			this.fboCurrent.bind();

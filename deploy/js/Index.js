@@ -1,3 +1,57 @@
+var main, scheduler, gui, images;
+var params = {};
+params.offset          = 0;
+params.posOffset       = 2.5;
+params.targetPosOffset = 2.5;
+params.velOffset       = 0.02;
+params.accOffset       = 0.003;
+params.targetAccOffset = 0.003;
+params.timeOffset      = 0.001;
+params.decreaseRate    = 0.9963;
+params.showForceMap    = false;
+params.showMap         = false;
+
+params.openingDuration = 1500;
+params.closingDuration = 1000;
+
+function init() {
+
+	scheduler  = new Scheduler();
+	var loader = new SimpleImageLoader();
+
+	var toLoad = [
+				"assets/bg.jpg",
+				"assets/card.jpg",
+				"assets/image0.jpg",
+				"assets/image1.jpg",
+				"assets/image2.jpg",
+				"assets/image3.jpg",
+				"assets/image4.jpg",
+				"assets/image5.jpg",
+				"assets/gold.jpg"
+				];
+
+	loader.load(toLoad, this, this.onImageLoaded);
+}
+
+
+function onImageLoaded(imgs) {
+	images = imgs;
+	main = new Main();
+
+	// var gui = new dat.GUI({width:300});
+	// gui.add(params, "showMap");
+}
+
+window.craicAudioContext = (function(){
+	return  window.webkitAudioContext || window.AudioContext ;
+})();
+
+navigator.getMedia = ( navigator.mozGetUserMedia ||
+					   navigator.getUserMedia ||
+					   navigator.webkitGetUserMedia ||
+					   navigator.msGetUserMedia);
+			
 // Index.js
 function shuffle(o){ //v1.0
     for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
@@ -21,6 +75,7 @@ function shuffle(o){ //v1.0
 		this._canvas.height 	= window.innerHeight;
 		this._imageDatas 		= [];
 		this._needCheckProgress = false;
+		this._images 			= [];
 
 		GL.init(this._canvas);
 
@@ -29,66 +84,78 @@ function shuffle(o){ //v1.0
 		this.scene = new SceneSand();
 
 
-		this._btnRestart = document.body.querySelector(".btn_restart");
+		this._btnRestart  = document.body.querySelector(".btn_restart");
 		this._btnRestart.addEventListener("click", this.playNextImage.bind(this));
-
-		this._msgLoading = document.body.querySelector(".msg_loading");
-		this._msgBlowing = document.body.querySelector(".msg_blowing");
-		this._msgPressing = document.body.querySelector(".msg_press");
-		this._microHint = document.body.querySelector(".micro_hint");
-		this._message = this._msgBlowing;
+		
+		this._msgLoading  = document.body.querySelector(".msg_loading");
+		this._msgBlowing  = document.body.querySelector(".msg_blowing");
+		this._microHint   = document.body.querySelector(".micro_hint");
+		this._message     = this._msgBlowing;
 
 		this._micro = new Microphone();
 		this._micro.addEventListener("onMicroInit", this._onMicroInit.bind(this));
 		this._micro.init();
+
+		ElementUtils.addClass(this._msgLoading, "show");
+
+		window.addEventListener("keypress", this._onKeyPress.bind(this));
+		window.addEventListener("keyup", this._onKeyUp.bind(this));
 	};
 
 
 	p._onMicroInit = function(e) {
-		console.log( "Mirco Init : ", e.detail );
 		ElementUtils.addClass(this._microHint, "hide");
-
-		this._message = e.detail.hasAudio ? this._msgBlowing : this._msgPressing;
 
 		if(e.detail.hasAudio) {
 			this._micro.addEventListener("onSound", this._onSound.bind(this));
-		} else {
-			console.debug( "Not audio input, switch to keyboard" );
-			window.addEventListener("keypress", this._onKeyPress.bind(this));
-			window.addEventListener("keyup", this._onKeyUp.bind(this));
-		}
+		} 
 	};
 
 
 	p._onSound = function(e) {
 		var increase = e.detail.increase;
 		this.scene.setIncrease(increase);
+		
+		params.targetPosOffset = 2.5 + increase * 150;
+		// console.log( "Increase : ", params.targetPosOffset );
 
 		if(this.scene.isCardReady() && increase > 0 ) {
 			ElementUtils.removeClass(this._msgBlowing, "show");
+			scheduler.delay(this, this.showRestartButton, [], 1000);
 		} 
 	};
 
 
 	p._onKeyPress = function(e) {
-		if(e.keyCode == 32) {
-			var max = .015;
+		if(e.charCode == 32) {
+			var max = .05;
 			params.targetAccOffset = max;
+			params.targetPosOffset = 5.5;
 			increase = max * .25;
 			this.scene.setIncrease(increase);
-			ElementUtils.removeClass(this._msgPressing, "show");
+			ElementUtils.removeClass(this._message, "show");
+			scheduler.delay(this, this.showRestartButton, [], 1000);
 		}
+	};
+
+
+	p.showRestartButton = function() {
+		if(!ElementUtils.hasClass(this._btnRestart, "show")) ElementUtils.addClass(this._btnRestart, "show");	
+	};
+
+
+	p.hideRestartButton = function() {
+		ElementUtils.removeClass(this._btnRestart, "show");	
 	};
 
 	p._onKeyUp = function(e) {
 		this.scene.setIncrease(0);
 		params.targetAccOffset = .003;
+		params.targetPosOffset = 2.5;
 	};
 
 
 	p.parseImages = function() {
-		console.debug( "Parse Image" );
-
 		var imgGold     = images["gold"];
 		var cvsGold     = document.createElement("canvas");
 		cvsGold.width   = imgGold.width;
@@ -100,16 +167,18 @@ function shuffle(o){ //v1.0
 		
 		var i=0;
 		while(images["image"+i] != undefined) {
-			scheduler.defer(this, this.getImageData, [images["image"+i]]);
+			this._images.push(images["image"+i]);
+			// scheduler.defer(this, this.getImageData, [images["image"+i]]);
 			i++;
 		}
-		scheduler.defer(this, this._onImageDataParsed, []);
+		// scheduler.defer(this, this._onImageDataParsed, []);
 
+		scheduler.delay(this, this.playNextImage, [], 4000);	
 	};
 
 
 	p.getImageData = function(img) {
-		console.log( "Get Image data :", img );
+		if(img.particleData != undefined) return img.particleData;
 		var threshold   = 220;
 		var canvas      = document.createElement("canvas");
 		canvas.width    = img.width;
@@ -146,31 +215,33 @@ function shuffle(o){ //v1.0
 			particles.push(p);
 		}
 
-		this.particles = particles;
-		this._imageDatas.push(particles);
+		img.particleData = particles;
+		// this._imageDatas.push(particles);
+		return particles;
 	};
 
 
 	p._onImageDataParsed = function() {
-		console.debug( "All Image Data Parsed" );
-		ElementUtils.addClass(this._btnRestart, "show");	
 		scheduler.delay(this, this.playNextImage, [], 4000);
 	};	
 
 
 	p.playNextImage = function() {
-		console.debug( "Play next bg" );
+		this.hideRestartButton();
+		
 		ElementUtils.removeClass(this._message, "show");
 		ElementUtils.addClass(this._msgLoading, "show");
 		this._needCheckProgress = true;
 		this.scene.toHide();
-		// this.scene._isCardReady = false;
+
 		scheduler.delay(this, this.toPlayNextImg, [], 500);
 	};
 
 
 	p.toPlayNextImg = function() {
-		this.scene.setImagesData(getRandomElement(this._imageDatas));
+		var nextImage = getRandomElement(this._images);
+		var particles = this.getImageData(nextImage);
+		this.scene.setImagesData(particles);
 	};
 
 

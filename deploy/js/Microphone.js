@@ -10,6 +10,12 @@
 
 
 	p.init = function() {
+		if(isSafari() ) {
+			alert("is safari");
+			this.dispatchCustomEvent("onMicroInit", {hasAudio:false});
+			return;
+		}
+
 		try {
             this.audioContext = new craicAudioContext();
         } catch(e) {
@@ -29,6 +35,21 @@
         }	
         
 	};
+
+
+	function isSafari() {
+		var ua = navigator.userAgent.toLowerCase(); 
+		if (ua.indexOf('safari') != -1) { 
+			if (ua.indexOf('chrome') > -1) {
+				return false;
+			} else {
+				return true;
+			}
+		}
+
+		return false;
+
+	}
 
 
 	p.onStream = function(stream) {

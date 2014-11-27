@@ -20,10 +20,11 @@ void main(void) {
 	vec4 color = texture2D(texture, aTextureCoord);
 	float range = 200.0;
 	alpha = clamp(1.5 - color.y, 0.0, 1.0);
+
 	alpha = sin(alpha * PI * .5);
 	alpha *= opacity;
 	pos = color.rgb - vec3(.5);
-
+	pos.y *= 1.3;
 	pos *= range;
 	if(aTextureCoord.x < .5 && aTextureCoord.y < .5) {
 		toDiscard = 1.0;

@@ -24,7 +24,7 @@
 
 		var size = 126;
 		var ratio = 1024/896;
-		var y = -90;
+		var y = -117;
 		var xOffset = 15;
 
 		positions.push([-size+xOffset,	y,   size/ratio]);
@@ -208,7 +208,7 @@
 
 	p.outro = function() {
 		if(this.tweenPos) TWEEN.remove(this.tweenPos);
-		this.tweenPos = new TWEEN.Tween(this).to({"x":-500, "y":-500, "z":1000, "alpha":0}, params.closingDuration).easing(TWEEN.Easing.Sinusoidal.In).start();
+		this.tweenPos = new TWEEN.Tween(this).to({"x":-100, "y":-800, "z":-500, "alpha":0}, params.closingDuration).easing(TWEEN.Easing.Sinusoidal.In).start();
 	};
 
 })();

@@ -21,7 +21,7 @@
 		gl.attachShader(this.shaderProgram, this.fragmentShader);
 		gl.linkProgram(this.shaderProgram);
 		this._isReady = true;
-		console.log( "Shader program created : ", this.idVertex, this.idFragment );
+		// console.log( "Shader program created : ", this.idVertex, this.idFragment );
 	};
 
 

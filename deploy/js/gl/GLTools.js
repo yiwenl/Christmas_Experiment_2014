@@ -11,10 +11,11 @@ GL.init = function(canvas) {
 	this.canvas = canvas;
 	this.gl = this.canvas.getContext("webgl", {antialias:true}) || this.canvas.getContext("experimental-webgl", {antialias:true}) ;
 	this.resize();
+	this._enabledVertexAttrib = []
 
 	var size = this.gl.getParameter(this.gl.SAMPLES);
 	var antialias = this.gl.getContextAttributes().antialias;
-	console.log( "Sample size : ", size, antialias );
+	// console.log( "Sample size : ", size, antialias );
 
 	this.gl.viewport(0, 0, this.gl.viewportWidth, this.gl.viewportHeight);
     this.gl.enable(this.gl.DEPTH_TEST);
@@ -84,13 +85,22 @@ GL.draw = function(mesh) {
 	this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.vBufferPos);
 	var vertexPositionAttribute = getAttribLoc(this.gl, this.shaderProgram, "aVertexPosition");
 	this.gl.vertexAttribPointer(vertexPositionAttribute, mesh.vBufferPos.itemSize, this.gl.FLOAT, false, 0, 0);
-	this.gl.enableVertexAttribArray(vertexPositionAttribute);
+	if(this._enabledVertexAttrib.indexOf(vertexPositionAttribute) == -1) {
+		this.gl.enableVertexAttribArray(vertexPositionAttribute);
+		this._enabledVertexAttrib.push(vertexPositionAttribute);
+	}
+	
+	
 
 	//	TEXTURE COORDS
 	this.gl.bindBuffer(this.gl.ARRAY_BUFFER, mesh.vBufferUV);
 	var textureCoordAttribute = getAttribLoc(this.gl, this.shaderProgram, "aTextureCoord");
 	this.gl.vertexAttribPointer(textureCoordAttribute, mesh.vBufferUV.itemSize, this.gl.FLOAT, false, 0, 0);
-	this.gl.enableVertexAttribArray(textureCoordAttribute);
+	// this.gl.enableVertexAttribArray(textureCoordAttribute);
+	if(this._enabledVertexAttrib.indexOf(textureCoordAttribute) == -1) {
+		this.gl.enableVertexAttribArray(textureCoordAttribute);
+		this._enabledVertexAttrib.push(textureCoordAttribute);
+	}
 
 	//	INDICES
 	this.gl.bindBuffer(this.gl.ELEMENT_ARRAY_BUFFER, mesh.iBuffer);
@@ -101,6 +111,11 @@ GL.draw = function(mesh) {
 		var attrPosition = getAttribLoc(this.gl, this.shaderProgram, mesh.extraAttributes[i].name);
 		this.gl.vertexAttribPointer(attrPosition, mesh.extraAttributes[i].itemSize, this.gl.FLOAT, false, 0, 0);
 		this.gl.enableVertexAttribArray(attrPosition);		
+
+		if(this._enabledVertexAttrib.indexOf(attrPosition) == -1) {
+			this.gl.enableVertexAttribArray(attrPosition);
+			this._enabledVertexAttrib.push(attrPosition);
+		}
 	}
 
 	//	DRAWING

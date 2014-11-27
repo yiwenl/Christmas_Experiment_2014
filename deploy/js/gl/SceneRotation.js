@@ -101,8 +101,6 @@
 
 
 	p.setCameraPos = function(quat) {
-		console.log( "Set camera pos : ", quat );
-
 		if(this._slerp > 0) return;
 		// quat4.set(quat, this._rotation);
 		var tempRotation = quat4.create(this._rotation);
@@ -198,7 +196,7 @@
 			quat4.multiply(tempRotation, quat);
 		}
 		
-		this._z += (this._preZ - this._z) * this._easing;
+		// this._z += (this._preZ - this._z) * this._easing;
 	};
 
 })();
