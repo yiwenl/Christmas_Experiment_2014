@@ -2,11 +2,11 @@
 
 (function() {
 	ViewCard = function() {
-		this.alpha = 1;
+		this.alpha = 0;
 		this.x = 0;
 		this.y = 0;
 		this.z = 0;
-		View.call(this, "assets/shaders/general.vert", "assets/shaders/general.frag");
+		View.call(this, "assets/shaders/card.vert", "assets/shaders/card.frag");
 	}
 
 	var p = ViewCard.prototype = new View();
@@ -16,7 +16,11 @@
 	p._init = function() {
 		var positions = [];
 		var coords = [];
-		var indices = [0, 1, 3, 1, 2, 3];
+		var colors = [];
+		// var indices = [0, 1, 3, 1, 2, 3];
+		var indices = [];
+		var index = 0;
+		var volume = 1;
 
 		var size = 126;
 		var ratio = 1024/896;
@@ -33,10 +37,150 @@
 		coords.push([0, 0]);
 		coords.push([1, 0]);
 
+		colors.push([1, 1, 1]);
+		colors.push([1, 1, 1]);
+		colors.push([1, 1, 1]);
+		colors.push([1, 1, 1]);
+
+		indices.push(index*4+0);
+		indices.push(index*4+1);
+		indices.push(index*4+3);
+		indices.push(index*4+1);
+		indices.push(index*4+2);
+		indices.push(index*4+3);
+
+		index ++;
+
+		
+		positions.push([ size+xOffset,	y,   size/ratio]);
+		positions.push([-size+xOffset,	y,   size/ratio]);
+		positions.push([-size+xOffset,	y-volume,   size/ratio]);
+		positions.push([ size+xOffset,	y-volume,   size/ratio]);
+
+		coords.push([.1, .1]);
+		coords.push([.05, .1]);
+		coords.push([.05, .05]);
+		coords.push([.1, .05]);
+
+		colors.push([.8, .8, .8]);
+		colors.push([.8, .8, .8]);
+		colors.push([.8, .8, .8]);
+		colors.push([.8, .8, .8]);
+
+		indices.push(index*4+0);
+		indices.push(index*4+1);
+		indices.push(index*4+3);
+		indices.push(index*4+1);
+		indices.push(index*4+2);
+		indices.push(index*4+3);
+
+		index ++;
+
+
+		positions.push([ size+xOffset,	y,  -size/ratio]);
+		positions.push([ size+xOffset,	y,   size/ratio]);
+		positions.push([ size+xOffset,	y-volume,   size/ratio]);
+		positions.push([ size+xOffset,	y-volume,  -size/ratio]);
+
+		coords.push([.1, .1]);
+		coords.push([.05, .1]);
+		coords.push([.05, .05]);
+		coords.push([.1, .05]);
+
+		colors.push([.9, .9, .9]);
+		colors.push([.9, .9, .9]);
+		colors.push([.9, .9, .9]);
+		colors.push([.9, .9, .9]);
+
+		indices.push(index*4+0);
+		indices.push(index*4+1);
+		indices.push(index*4+3);
+		indices.push(index*4+1);
+		indices.push(index*4+2);
+		indices.push(index*4+3);
+
+		index ++;
+
+
+		positions.push([-size+xOffset,	y,  -size/ratio]);
+		positions.push([ size+xOffset,	y,  -size/ratio]);
+		positions.push([ size+xOffset,	y-volume,  -size/ratio]);
+		positions.push([-size+xOffset,	y-volume,  -size/ratio]);
+
+		coords.push([.1, .1]);
+		coords.push([.05, .1]);
+		coords.push([.05, .05]);
+		coords.push([.1, .05]);
+
+		colors.push([.8, .8, .8]);
+		colors.push([.8, .8, .8]);
+		colors.push([.8, .8, .8]);
+		colors.push([.8, .8, .8]);
+
+		indices.push(index*4+0);
+		indices.push(index*4+1);
+		indices.push(index*4+3);
+		indices.push(index*4+1);
+		indices.push(index*4+2);
+		indices.push(index*4+3);
+
+		index ++;
+
+		
+		positions.push([-size+xOffset,	y,   size/ratio]);
+		positions.push([-size+xOffset,	y,  -size/ratio]);
+		positions.push([-size+xOffset,	y-volume,  -size/ratio]);
+		positions.push([-size+xOffset,	y-volume,   size/ratio]);
+
+		coords.push([.1, .1]);
+		coords.push([.05, .1]);
+		coords.push([.05, .05]);
+		coords.push([.1, .05]);
+
+		colors.push([.9, .9, .9]);
+		colors.push([.9, .9, .9]);
+		colors.push([.9, .9, .9]);
+		colors.push([.9, .9, .9]);
+
+		indices.push(index*4+0);
+		indices.push(index*4+1);
+		indices.push(index*4+3);
+		indices.push(index*4+1);
+		indices.push(index*4+2);
+		indices.push(index*4+3);
+
+		index ++;
+
+
+		positions.push([ size+xOffset,	y-volume,   size/ratio]);
+		positions.push([-size+xOffset,	y-volume,   size/ratio]);
+		positions.push([-size+xOffset,	y-volume,  -size/ratio]);
+		positions.push([ size+xOffset,	y-volume,  -size/ratio]);
+
+		coords.push([.1, .1]);
+		coords.push([.05, .1]);
+		coords.push([.05, .05]);
+		coords.push([.1, .05]);
+
+		colors.push([1, 1, 1]);
+		colors.push([1, 1, 1]);
+		colors.push([1, 1, 1]);
+		colors.push([1, 1, 1]);
+
+		indices.push(index*4+0);
+		indices.push(index*4+1);
+		indices.push(index*4+3);
+		indices.push(index*4+1);
+		indices.push(index*4+2);
+		indices.push(index*4+3);
+
+
 		this.mesh = new Mesh(positions.length, indices.length, GL.gl.TRIANGLES);
 		this.mesh.bufferVertex(positions);
 		this.mesh.bufferTexCoords(coords);
 		this.mesh.bufferIndices(indices);
+		this.mesh.bufferData(colors, "aVertexColor", 3);
+
 	};
 
 

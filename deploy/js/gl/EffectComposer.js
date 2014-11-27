@@ -1,7 +1,7 @@
 // EffectComposer.js
 
 (function() {
-	Pass = function(params, size) {
+	Pass = function(params, width, height) {
 		if(params == undefined) return;
 		if( (typeof params) == "string") {
 			this.view = new ViewCopy("assets/shaders/copy.vert", params);
@@ -9,7 +9,8 @@
 			this.view = params;
 		}
 
-		this.size = size == undefined ? 512 : size;
+		this.width = width == undefined ? 512 : width;
+		this.height = height == undefined ? 512 : height;
 		this._init();
 	}
 
@@ -17,7 +18,7 @@
 
 
 	p._init = function() {
-		this.fbo = new Framebuffer(this.size, this.size);
+		this.fbo = new Framebuffer(this.width, this.height);
 		this.fbo.bind();
 		GL.setViewport(0, 0, this.fbo.width, this.fbo.height);
 		GL.clear(0, 0, 0, 0);

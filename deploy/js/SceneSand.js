@@ -3,6 +3,7 @@
 (function() {
 
 	var random = function(min, max) { return min + Math.random() * (max - min); }
+	var FBO_BLUR_SIZE = 512;
 
 	SceneSand = function(particles) {
 		this.particles = particles;
@@ -24,9 +25,24 @@
 		this.texCard 	= new GLTexture(images["card"]);
 		this.fboCurrent = new Framebuffer(512*2, 512*2, GL.gl.NEAREST, GL.gl.NEAREST);
 		this.fboTarget  = new Framebuffer(512*2, 512*2, GL.gl.NEAREST, GL.gl.NEAREST);
+
+		// this.fboCard    = new Framebuffer(window.innerWidth, window.innerHeight, GL.gl.NEAREST, GL.gl.NEAREST);
+		this.fboCard    = new Framebuffer(FBO_BLUR_SIZE, FBO_BLUR_SIZE);
 	};
 
 	p._initViews = function() {
+		this._vCopy = new ViewCopy();
+		this._vShadow = new ViewShadow();
+
+		this._hBlur			= new ViewBlur("assets/shaders/HBlur.frag");
+		this._passHBlur 	= new Pass(this._hBlur, FBO_BLUR_SIZE, FBO_BLUR_SIZE);
+		this._vBlur			= new ViewBlur("assets/shaders/VBlur.frag");
+		this._passVBlur 	= new Pass(this._vBlur, FBO_BLUR_SIZE, FBO_BLUR_SIZE);
+
+		this._composer = new EffectComposer();
+		this._composer.addPass(this._passHBlur);
+		this._composer.addPass(this._passVBlur);
+
 		scheduler.defer(this, this.createBg, []);
 		scheduler.defer(this, this.createForce, []);
 		scheduler.defer(this, this.createCard, []);
@@ -38,7 +54,9 @@
 	};
 
 	p.createCard = function() {
+		console.debug( "Create card" );
 		this._vCard   = new ViewCard();
+		// this._vCard.intro();
 	};
 
 	p.createBg = function() {
@@ -136,6 +154,8 @@
 		}
 		
 
+		
+
 		//	RENDER THE PARTICLES
 		GL.gl.viewport(0, 0, window.innerWidth, window.innerHeight);
 		var clear = 0;
@@ -145,6 +165,29 @@
 		GL.rotate(this.rotationFront);
 		if(this._vBg) this._vBg.render(this.texBg);
 
+		
+
+		if(this._vCard && this._vCard.alpha > 0) {
+			//	RENDER CARD TO TEXTURE TO CREATE DROPSHADOW
+			GL.setMatrices(this.camera);
+			GL.rotate(this.sceneRotation.matrix);
+			GL.gl.viewport(0, 0, this.fboCard.width, this.fboCard.height);
+			this.fboCard.bind();
+			GL.clear(0, 0, 0, 0);
+			this._vCard.render(this.texCard);
+			this.fboCard.unbind();
+
+			//	APPLY THE BLUR
+			GL.gl.viewport(0, 0, FBO_BLUR_SIZE, FBO_BLUR_SIZE);
+			GL.setMatrices(this.cameraOtho);
+			GL.rotate(this.rotationFront);
+			this._composer.render(this.fboCard.getTexture() );
+
+			//	RENDER CARD FBO BACK TO SCREEN
+			GL.gl.viewport(0, 0, window.innerWidth, window.innerHeight);
+			this._vShadow.render(this._composer.getTexture());
+		// 	this._vCopy.render(this.fboCard.getTexture());
+		}
 
 		if(this._isCardReady) {
 			GL.gl.enable(GL.gl.DEPTH_TEST);

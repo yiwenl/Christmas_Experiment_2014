@@ -198,8 +198,7 @@
 			quat4.multiply(tempRotation, quat);
 		}
 		
-		// this._z += (this._preZ - this._z) * this._easing;
-		
+		this._z += (this._preZ - this._z) * this._easing;
 	};
 
 })();
