@@ -27,7 +27,8 @@ function init() {
 				"assets/image2.jpg",
 				"assets/image3.jpg",
 				"assets/image4.jpg",
-				"assets/image5.jpg",
+				// "assets/image5.jpg",
+				// "assets/image6.jpg",
 				"assets/gold.jpg"
 				];
 
@@ -105,6 +106,8 @@ function shuffle(o){ //v1.0
 
 	p._onMicroInit = function(e) {
 		ElementUtils.addClass(this._microHint, "hide");
+
+		console.log( "Has Audio : ", e.detail.hasAudio );
 
 		if(e.detail.hasAudio) {
 			this._micro.addEventListener("onSound", this._onSound.bind(this));

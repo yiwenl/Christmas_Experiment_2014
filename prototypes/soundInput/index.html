@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Blow - Christmas Experiment 2014</title>
+		<meta name="description" content="Blow - Christmas Experiment 2014">
+		<meta http-equiv="X-UA-Compatible" content="IE=100" > <!-- IE9 mode -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=1.0">
+		<meta property="og:title" content="Blow" />
+		<meta property="og:description" content="Christmas Experiment 2014"/>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+
+		<script src="Scheduler.js"></script>
+		<script src="EventDispatcher.js"></script>
+		<script src="Microphone.js"></script>
+	</head>
+
+	<script type="text/javascript">
+		window.craicAudioContext = (function(){
+			return  window.webkitAudioContext || window.AudioContext ;
+		})();
+
+		navigator.getMedia = ( navigator.mozGetUserMedia ||
+							   navigator.getUserMedia ||
+							   navigator.webkitGetUserMedia ||
+							   navigator.msGetUserMedia);
+
+
+		var micro;
+		var scheduler = new Scheduler();
+
+		function init() {
+			micro = new Microphone();
+
+			console.log( "INIT", micro );	
+			micro.init();		
+		}
+	</script>
+
+	<body onload="init()">
+		<p class="debug">Debug</p>
+	</body>
+</html>
