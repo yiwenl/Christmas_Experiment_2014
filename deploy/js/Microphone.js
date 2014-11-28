@@ -53,19 +53,6 @@
 
 
 	p.onStream = function(stream) {
-		// var input = this.audioContext.createMediaStreamSource(stream);
-		// var filter = this.audioContext.createBiquadFilter();
-		// filter.frequency.value = 60.0;
-		// filter.type = filter.NOTCH;
-		// filter.Q = 10.0;
-
-		// this.analyser = this.audioContext.createAnalyser();
-
-		// // Connect graph.
-		// input.connect(filter);
-		// filter.connect(this.analyser);
-
-		// Setup a timer to visualize some stuff.
 		this.dispatchCustomEvent("onMicroInit", {hasAudio:this.audioContext != undefined});
 
 		var mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
@@ -95,24 +82,6 @@
 			max = tmp * .075;
 		}
 
-		// var increase = .0;
-		// this.times = new Uint8Array(this.analyser.frequencyBinCount);
-		// this.analyser.getByteTimeDomainData(this.times);
-		// var total = 0;
-		// var threshold = .515;
-		// var max = .5;
-		// for(var i=0; i<this.times.length; i++) {
-		// 	var f = this.times[i]/256;
-		// 	// console.log( f );
-		// 	total += this.times[i]/256;
-		// 	if(f>max ) max = f;
-		// }
-
-		// max -= threshold;
-		// if(max<0) max = 0;
-		
-
-		// // console.log( "max : ", max );
 		increase = max * .25;
 		params.targetAccOffset = .003 + max * .7;
 		this.dispatchCustomEvent("onSound", {increase:increase});
