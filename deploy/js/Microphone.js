@@ -11,7 +11,7 @@
 
 	p.init = function() {
 		if(isSafari() ) {
-			alert("is safari");
+			console.debug("is safari");
 			this.dispatchCustomEvent("onMicroInit", {hasAudio:false});
 			return;
 		}
@@ -19,7 +19,7 @@
 		try {
 			this.audioContext = new craicAudioContext();
 		} catch(e) {
-			alert('Web Audio API is not supported in this browser');
+			console.debug('Web Audio API is not supported in this browser');
 			this.dispatchCustomEvent("onMicroInit", {hasAudio:this.audioContext != undefined});
 		}
 
@@ -30,7 +30,7 @@
 				that.dispatchCustomEvent("onMicroInit", {hasAudio:this.audioContext != undefined});
 			});
 		} catch (e) {
-			alert('webkitGetUserMedia threw exception :' + e);
+			console.debug('webkitGetUserMedia threw exception :' + e);
 			this.dispatchCustomEvent("onMicroInit", {hasAudio:this.audioContext != undefined});
 		}	
 		
