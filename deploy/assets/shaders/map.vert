@@ -36,4 +36,5 @@ void main(void) {
 
     gl_Position = uPMatrix * uMVMatrix * vec4(pos+position, 1.0);
     vVertexColor = aVertexColor;
+    gl_PointSize = 1.0;
 }
